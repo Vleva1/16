@@ -1,3 +1,6 @@
+from django.contrib.auth.mixins import  PermissionRequiredMixin
+from django.views import View
+
 from .filters import PostFilter
 
 from .models import Author, Category, Posts, Comment
@@ -8,10 +11,14 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView, C
 
 from datetime import datetime
 
+class MyView(PermissionRequiredMixin, View):
+    permission_required = ('<app>.<action>_<model>',
+                           '<app>.<action>_<model>')
+
 class AuthorsList(ListView):
     model = Author
     ordering = 'name'
-    template_name = 'authors.html'
+    template_name = 'auth.html'
     context_object_name = 'authors'
 
 class CategorysList(ListView):
@@ -46,7 +53,7 @@ class PostDetail(DetailView):
 
 
 
-class PostCreate(CreateView):
+class PostCreate(CreateView, PermissionRequiredMixin):
     form_class = PostForm
     model = Posts
     template_name = 'post_create.html'
@@ -65,7 +72,7 @@ class PostCreate(CreateView):
         return super().form_valid(form)
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(UpdateView, PermissionRequiredMixin):
     form_class = PostForm
     model = Posts
     template_name = 'post_edit.html'
@@ -73,7 +80,7 @@ class PostUpdate(UpdateView):
 
 
 
-class PostDelete(DeleteView):
+class PostDelete(DeleteView, PermissionRequiredMixin):
     model = Posts
     template_name = 'post_delete.html'
     success_url = reverse_lazy('posts_')

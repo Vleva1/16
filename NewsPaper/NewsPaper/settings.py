@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-y5!q7y+n3j*j0@c15rhs0o*o#3s_vpsyy-72m)%ylj$-94q__i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -37,12 +37,33 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'news',
+
     'django.contrib.sites',
     'django.contrib.flatpages',
+    'news',
+    'protect',
+    'sign',
+    'django_filters',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
 
 ]
 SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
+
+SITE_URL = 'http://127.0.0.1:8000'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,7 +72,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
 ]
 
 ROOT_URLCONF = 'NewsPaper.urls'
@@ -74,6 +96,10 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/sign/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/goodbye/'
 
 
 # Database
@@ -106,7 +132,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 

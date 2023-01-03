@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.conf import settings
 
 article = 'AR'
 news = "NW"
@@ -113,3 +114,6 @@ class Comment(models.Model):
         self.rate_comment -= 1
         self.save()
 
+class SubscribersUsers(models.Model):
+    id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    categories = models.ForeignKey('Category', on_delete=models.CASCADE)

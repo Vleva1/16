@@ -1,4 +1,6 @@
-from django.urls import path
+from allauth.account.views import LogoutView
+from django.contrib.auth.views import LoginView
+from django.urls import path, include
 from .views import PostsList, PostDetail, PostCreate, PostUpdate, PostDelete, PostSearch
 
 urlpatterns = [
@@ -13,4 +15,7 @@ urlpatterns = [
    path('<int:pk>/edit/', PostUpdate.as_view(), name='edit'),
    path('<int:pk>/delete/', PostDelete.as_view(), name='delete'),
    path('search/', PostSearch.as_view(), name='search'),
-]
+   path('login/', LoginView.as_view(template_name='sign/login.html'), name='login'),
+   path('logout/', LogoutView.as_view(template_name='sign/logout.html'), name='logout'),
+
+   ]
