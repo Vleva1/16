@@ -40,11 +40,11 @@ INSTALLED_APPS = [
 
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'news',
+    'news.apps.NewsConfig',
     'protect',
     'sign',
     'django_filters',
-
+    'django_apscheduler',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -58,7 +58,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'vlevaq'
 
 ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 
@@ -77,7 +77,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'NewsPaper.urls'
-
+DEFAULT_FROM_EMAIL = 'vlevaq@yandex.ru'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -160,3 +160,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+
+EMAIL_HOST =  'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'vlevaq'
+EMAIL_HOST_PASSWORD = '2566012qwe'
+EMAIL_USE_SSL = True
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds

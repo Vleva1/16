@@ -1,5 +1,5 @@
 from django_filters import FilterSet, DateFilter, CharFilter, ModelChoiceFilter
-from .models import Posts, Author
+from .models import Posts, Author, Category
 from django import forms
 
 class PostFilter(FilterSet):
@@ -28,3 +28,11 @@ class PostFilter(FilterSet):
             label = 'Дата',
             lookup_expr = 'date__gte'
         )
+
+class CategFilter(FilterSet):
+   class Meta:
+       model = Category
+       fields = {
+
+           'name': ['icontains'],
+       }

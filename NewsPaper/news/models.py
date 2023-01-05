@@ -37,7 +37,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length = 30, unique = True)
-
+    subscribers = models.ManyToManyField(User, through='SubscribersUsers')
 class Posts(models.Model):
     author = models.ForeignKey(Author, on_delete = models.CASCADE)
     option = models.CharField(max_length = 2,
@@ -117,3 +117,11 @@ class Comment(models.Model):
 class SubscribersUsers(models.Model):
     id_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     categories = models.ForeignKey('Category', on_delete=models.CASCADE)
+
+class Appointment(models.Model):
+    date = models.DateField(default=datetime.utcnow)
+    user_name = models.CharField(max_length=200)
+    message = models.TextField()
+
+    def __str__(self):
+        return f'{self.user_name}: {self.message}'

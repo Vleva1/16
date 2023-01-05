@@ -22,7 +22,8 @@ Posts
                     <a href="/posts/{{post.pk}}">{{ post.title|truncatechars:50|censor }}</a>
                     <br>
                     {% for cat in post.category.all %}
-                    категория: <b>{{ cat }}</b>
+                    категория: <a href="{% url 'category_list' cat.id %}"><b>{{ cat }}</b></a>
+
                     {% endfor %}
                     <br>
                     {{ post.body|truncatechars:200|censor }}

@@ -1,9 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import  PermissionRequiredMixin
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
 from .filters import PostFilter
 
-from .models import Author, Category, Posts, Comment
+from .models import Author, Category, Posts, Comment, Appointment
 
 from .forms import PostForm
 from django.urls import reverse_lazy
@@ -103,3 +107,68 @@ class PostSearch(ListView):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         return context
+
+
+class AppointmentView(View):
+    template_name = 'appointment_created.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'appointment_created.html', {})
+
+    def post(self, request, *args, **kwargs):
+        appointment = Appointment(
+            date=datetime.strptime(request.POST['date'], '%Y-%m-%d'),
+            user_name=request.POST['user_name'],
+            message=request.POST['message'],
+        )
+        appointment.save()
+
+        # отправляем письмо
+        send_mail(
+            subject=f'{appointment.user_name} {appointment.date.strftime("%Y-%M-%d")}',
+            # имя клиента и дата записи будут в теме для удобства
+            message=appointment.message,  # сообщение с кратким описанием проблемы
+            from_email='vlevaq@yandex.ru',  # здесь указываете почту, с которой будете отправлять (об этом попозже)
+            recipient_list=[]  # здесь список получателей. Например, секретарь, сам врач и т. д.
+        )
+
+        return redirect('appointments:appointment_create')
+
+@login_required
+def subscribe(request, pk):
+    user = User.objects.get(pk=request.user.id)
+    post = Posts.objects.get(pk=pk)
+    category = post.category.all()
+    for cat in category:
+        if user not in cat.subscribers.all():
+            cat.subscribers.add(user)
+    message = "доне"
+    return render(request, 'subscribe.html', {"category": category, 'message': message})
+
+@login_required
+def unsubscribe(request, pk):
+    user = User.objects.get(pk=request.user.id)
+    post = Posts.objects.get(pk=pk)
+    category = post.name_category.all()
+    for cat in category:
+        if user in cat.subscribers.all():
+            cat.subscribers.remove(user)
+    message = "доне"
+    return render(request, 'unsubscribe.html',{"category" : category, 'message' : message })
+
+
+class CategoryListView(ListView):
+     model = Posts
+     template_name = 'category_list.html'
+     context_object_name = 'category_news_list'
+
+     def get_queryset(self):
+         self.category = get_object_or_404(Category, id = self.kwargs['pk'])
+         queryset = Posts.objects.filter(category = self.category).order_by('-category')
+         return queryset
+
+     def get_context_data(self, **kwargs):
+         context = super().get_context_data(**kwargs)
+         context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+         context['category'] = self.category
+         return context
