@@ -1,3 +1,4 @@
+from news.models import Author
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User, Group
@@ -25,8 +26,11 @@ class BaseRegisterView(CreateView):
 
 @login_required
 def upgrade_me(request):
-    user = request.user
+    user1 = request.user
+
+    a = Author.objects.create(name = user1.username, user = user1)
+    a.save()
     premium_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
-        premium_group.user_set.add(user)
+        premium_group.user_set.add(user1)
     return redirect('/')

@@ -27,8 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
-
-# Application definition
+CELERY_BROKER_URL = 'redis://:nkywHRrrSTuzR4RUQUS2qH7mGwS9d799@redis-16009.c99.us-east-1-4.ec2.cloud.redislabs.com:16009/0'
+CELERY_RESULT_BACKEND = 'redis://:nkywHRrrSTuzR4RUQUS2qH7mGwS9d799@redis-16009.c99.us-east-1-4.ec2.cloud.redislabs.com:16009/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -98,8 +101,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'NewsPaper.wsgi.application'
 
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/sign/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/goodbye/'
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 
 # Database
@@ -170,3 +173,4 @@ EMAIL_USE_SSL = True
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+
