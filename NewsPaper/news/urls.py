@@ -1,7 +1,8 @@
 from allauth.account.views import LogoutView
 from django.contrib.auth.views import LoginView
 from django.urls import path, include
-from .views import PostsList, PostDetail, PostCreate, PostUpdate, PostDelete, PostSearch, subscribe, CategoryListView
+from .views import PostsList, PostDetail, PostCreate, PostUpdate, PostDelete, PostSearch, subscribe, CategoryListView, \
+   IndexView
 
 urlpatterns = [
    # path — означает путь.
@@ -19,6 +20,6 @@ urlpatterns = [
    path('logout/', LogoutView.as_view(template_name='sign/logout.html'), name='logout'),
    path('subscribe/<int:pk>', subscribe, name='subscribe'),
    path('unsubscribe/<int:pk>', subscribe, name='unsubscribe'),
-   path('categories/<int:pk>', CategoryListView.as_view(), name='category_list')
-
-   ]
+   path('categories/<int:pk>', CategoryListView.as_view(), name='category_list'),
+   #path('', IndexView.as_view()),
+]

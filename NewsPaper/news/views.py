@@ -14,10 +14,22 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView, CreateView
 
 from datetime import datetime
+from django.http import HttpResponse
+from django.views import View
+from .tasks import hello, printer, send_email, last_post_week
+
 
 class MyView(PermissionRequiredMixin, View):
     permission_required = ('<app>.<action>_<model>',
                            '<app>.<action>_<model>')
+
+
+
+class IndexView(View):
+    def get(self, request):
+        printer.delay(10)
+        hello.delay()
+        return HttpResponse('Hello!')
 
 class AuthorsList(ListView):
     model = Author
@@ -124,16 +136,8 @@ class AppointmentView(View):
         appointment.save()
 
         # отправляем письмо
-        send_mail(
-            subject=f'{appointment.user_name} {appointment.date.strftime("%Y-%M-%d")}',
-            # имя клиента и дата записи будут в теме для удобства
-            message=appointment.message,  # сообщение с кратким описанием проблемы
-            from_email='vlevaq@yandex.ru',  # здесь указываете почту, с которой будете отправлять (об этом попозже)
-            recipient_list=[]  # здесь список получателей. Например, секретарь, сам врач и т. д.
-        )
-
-        return redirect('appointments:appointment_create')
-
+        send_email()
+        last_post_week()
 @login_required
 def subscribe(request, pk):
     user = User.objects.get(pk=request.user.id)
