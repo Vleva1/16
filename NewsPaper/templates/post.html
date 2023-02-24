@@ -1,10 +1,10 @@
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
-
+{% load cache %}
 {% block title %}
 Post
 {% endblock title %}
-
+{% cache 30 content %}
 {% block content %}
 <h1>Подробно</h1>
 <hr>
@@ -26,3 +26,4 @@ Post
 
 
 {% endblock content %}
+{% endcache %}

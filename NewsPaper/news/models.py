@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from datetime import datetime
 
@@ -13,15 +14,10 @@ OPTIONS = [
     (news, "новость")
 ]
 
-
-
 class Author(models.Model):
     name = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     rating = models.IntegerField(default = 0)
-
-
-
     def __str__(self):
         return f'{self.name}'
 
@@ -50,7 +46,9 @@ class Posts(models.Model):
     rate_post = models.IntegerField(default=0)
     category = models.ManyToManyField(Category, through = 'PostCategory')
 
-
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post-{self.pk}')
     @property
     def post_rating(self):
         return self.rate_post

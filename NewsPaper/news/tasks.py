@@ -28,7 +28,7 @@ def last_post_week():
     finish = date.today()
     category = Category.objects.all()
     for cat in category:
-        list_post = Posts.objects.filter(date__range=(start, finish), categories=cat.pk)
+        list_post = Posts.objects.filter(date__range=(start, finish), category=cat.pk)
         print(list_post)
         subscrs_email = []
         print(cat)
